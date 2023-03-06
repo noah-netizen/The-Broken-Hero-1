@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sketch</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/addons/p5.sound.min.js"></script>
+    <script src="https://p5play.org/v3/planck.min.js"></script>
+    <script src="https://p5play.org/v3/p5play.js"></script>
+  </head>
+
+  <body>
+    <script src="sketch.js"></script>
+  </body>
+</html>
+
+<script>
+//// global values
+////P5.PLAY LIBRARY MUST BE ENABLED FOR THIS PROGRAM TO RUN
+
+
+
+//// game control
+let stage = 0 // keeps track of your functions
+
+//// player
+let p1XPercent = 0.5; //p1 = player 1
+let p1YPercent = 0.8;
+let pWidthPercent = 0.03;
+let pHeightPercent = 0.07;
+
+let p1X;
+let p1Y;
+let pWidth;
+let pHeight;
+
+//// platform boxes
+let b1XPercent = 0.3;  // b1 = box 1
+let b1YPercent = 0.5;
+let bWidthPercent = 0.2;
+let bHeightPercent = 0.04;
+
+let b1X;
+let b1Y;
+let bWidth;
+let bHeight;
+
+//// gravity
+let jump = false;
+let direction = 1; // force of Y gravity
+let velocity = 2; // speed of player 1
+let jumpPower = 8; // strength of player 
+let fallingSpeed = 5; // equal to velocity
+let minHeightPercent = 0.8; // height of ground
+let maxHeightPercent = 0.05; // height of sky
+let minHeight;
+let maxHeight;
+let jumpCounter = 0; // keeps track of jumps
+
+//// setup
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    rectMode (CENTER);
+    textAlign (CENTER);
+  
+    // calculate initial values for player and platform boxes
+    p1X = windowWidth * p1XPercent;
+    p1Y = windowHeight * p1YPercent;
+    pWidth = windowWidth * pWidthPercent;
+    pHeight = windowHeight * pHeightPercent;
+  
+    b1X = windowWidth * b1XPercent;
+    b1Y = windowHeight * b1YPercent;
+    bWidth = windowWidth * bWidthPercent;
+    bHeight = windowHeight * bHeightPercent;
+  
+    // calculate initial values for ground and sky
+    minHeight = windowHeight * minHeightPercent;
+    maxHeight = windowHeight * maxHeightPercent;
+  }
+
+//// draw
+function draw() {
+    // call functions
+    keyReleased();
+    keyTyped();
+    gravity();
+  
+    if (stage == 0) {
+      game();
+    } // close = 0
+  
+  } // close draw
+
+//// game
+function game (){
+  // game appearance
+    background (150, 230, 240); // sky blue
+    let grassHeight = windowHeight / 5; // // calculate grass height as 1/5 of window height
+
+  // grass
+    noStroke();
+    fill(100 , 200, 75); // green
+    rect(windowWidth / 2, windowHeight - grassHeight / 2, windowWidth, grassHeight);
+
+  // window frame
+    noFill();
+    stroke(0);
+    strokeWeight(15);
+    rect(width / 2, height / 2, width, height);
+
+  // draw box
+    stroke(0);
+    strokeWeight(5);
+    fill(255, 120, 0); //orange
+    rect(b1X, b1Y, bWidth, bHeight);
+
+  // draw player
+    stroke(0);
+    fill(150, 0, 170); // purple
+    rect(p1X, p1Y, pWidth, pHeight);
+
+} // close game
+
+
+//// gravity
+function gravity(){
+ if(p1Y >= minHeight && jump == false ){
+    p1Y = p1Y; // stop falling
+ }
+ else{
+  wp1Y = p1Y + (direction * velocity); // keep falling
+  jumpCounter = 0; // reset jump counter when landed
+ }
+ 
+ if(jump == true){
+  if(p1Y <= maxHeight || jumpCounter >= jumpPower){
+    velocity = fallingSpeed; // fall at maxHeight
+  } // close at max
+  else{
+   velocity = -jumpPower; //jumping
+    jumpCounter = jumpCounter + 1; // add to jump counter
+
+  } // close else not at max
+ } // close jumpw
+ else{
+  velocity = fallingSpeed;
+ } // close not jumping
+
+
+} // close gravity
+
+function keyReleased() {
+    if(keyCode === LEFT_ARROW || key === 'a'){
+      p1X = p1X - 5; //move left
+    } //close move left
+
+    if(keyCode === RIGHT_ARROW || key === 'd'){
+      p1X = p1X + 5; //move right
+    } //close move right
+    
+} // close keyPressed
+
+function keyTyped(){
+  if(keyCode === UP_ARROW || key === 'w'){
+    jump = true; // jump
+  } // w is pressed
+  else{
+    jump = false;
+  } // w is not pressed
+
+} // close keyTyped
+</script>
